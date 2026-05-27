@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清醒的心 - 收聽入口</title>
+    <!-- 引入 Font Awesome 圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+            --info-color: #0891b2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* 主容器 - 沿用播放器風格 */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 30px 24px;
+        }
+
+        /* 標題區域 */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .header-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 6px;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* 按鈕區域 */
+        .button-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* 按鈕卡片樣式 */
+        .nav-button {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: var(--text-color);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button:active {
+            transform: translateY(0);
+        }
+
+        /* 按鈕圖示容器 */
+        .button-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .icon-new {
+            background-color: #dbeafe;
+            color: var(--primary-color);
+        }
+
+        .icon-original {
+            background-color: #fef3c7;
+            color: var(--warning-color);
+        }
+
+        .icon-backup {
+            background-color: #d1fae5;
+            color: var(--success-color);
+        }
+
+        /* 按鈕文字內容 */
+        .button-content {
+            flex: 1;
+        }
+
+        .button-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .button-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .button-arrow {
+            color: var(--text-muted);
+            font-size: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .nav-button:hover .button-arrow {
+            transform: translateX(4px);
+            color: var(--primary-color);
+        }
+
+        /* 底部資訊 */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer i {
+            color: #ef4444;
+        }
+
+        /* RWD 手機版微調 */
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+            .container {
+                border-radius: 12px;
+                padding: 24px 16px;
+            }
+            .header-title {
+                font-size: 1.4rem;
+            }
+            .nav-button {
+                padding: 14px 16px;
+            }
+            .button-icon-wrapper {
+                width: 42px;
+                height: 42px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 標題區域 -->
+        <div class="header">
+            <div class="header-icon">
+                <i class="fa-solid fa-headphones"></i>
+            </div>
+            <h1 class="header-title">清醒的心</h1>
+            <p class="header-subtitle">選擇收聽方式</p>
+        </div>
+
+        <!-- 按鈕區域 -->
+        <div class="button-section">
+
+            <!-- 按鈕 1：新網站 -->
+            <a href="https://apps.goodnews.org.tw/mod/modlist/清醒的心" 
+               class="nav-button" 
+               target="_blank" 
+               rel="noopener noreferrer">
+                <div class="button-icon-wrapper icon-new">
+                    <i class="fa-solid fa-globe"></i>
+                </div>
+                <div class="button-content">
+                    <div class="button-title">新網站</div>
+                    <div class="button-desc">全新介面，穩定收聽</div>
+                </div>
+                <i class="fa-solid fa-arrow-right button-arrow"></i>
+            </a>
+
+            <!-- 按鈕 2：原網站 -->
+            <a href="http://html5.goodnews.org.tw/ProgItemlist/清醒的心" 
+               class="nav-button" 
+               target="_blank" 
+               rel="noopener noreferrer">
+                <div class="button-icon-wrapper icon-original">
+                    <i class="fa-solid fa-tower-broadcast"></i>
+                </div>
+                <div class="button-content">
+                    <div class="button-title">原網站</div>
+                    <div class="button-desc">原始版本，經典收聽</div>
+                </div>
+                <i class="fa-solid fa-arrow-right button-arrow"></i>
+            </a>
+
+            <!-- 按鈕 3：備用 -->
+            <a href="https://welovetwn.github.io/AwakerHeart/" 
+               class="nav-button" 
+               target="_blank" 
+               rel="noopener noreferrer">
+                <div class="button-icon-wrapper icon-backup">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="button-content">
+                    <div class="button-title">備用網站</div>
+                    <div class="button-desc">替代方案，隨時收聽</div>
+                </div>
+                <i class="fa-solid fa-arrow-right button-arrow"></i>
+            </a>
+
+        </div>
+
+        <!-- 底部資訊 -->
+        <div class="footer">
+            <i class="fa-solid fa-heart"></i> 願您每一天都有一顆清醒的心!
+        </div>
+    </div>
+
+</body>
+</html>
