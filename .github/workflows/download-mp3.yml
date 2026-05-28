@@ -58,4 +58,3 @@ steps:
       git diff --cached --quiet || git commit -m "Update MP3 files"
 
       git push
-```
