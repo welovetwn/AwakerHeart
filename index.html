@@ -342,7 +342,6 @@
         function generatePlaylistData() {
             const list = [];
             const today = new Date();
-            const proxyUrl = 'https://api.allorigins.win/raw?url='; // 或其他 proxy
         
             for (let i = 0; i < 15; i++) {
                 const targetDate = new Date(today);
@@ -353,12 +352,13 @@
                 const dd = String(targetDate.getDate()).padStart(2, '0');
                 const dateString = `${yyyy}.${mm}.${dd}`;
         
-                const originalUrl = `http://streamak0119.akamaized.net/GoodnewsMedia/G-AwakerHeart${dateString}.mp3`;
-                
+                //const originalUrl = `http://streamak0119.akamaized.net/GoodnewsMedia/G-AwakerHeart${dateString}.mp3`;
+                // ✅ GitHub Pages 本地 mp3
+                const url = `./mp3/G-AwakerHeart${dateString}.mp3`;                
                 list.push({
                     "title": `${dateString} 清醒的心`,
                     "artist": "教會牧長",
-                    "src": originalUrl
+                    "src": url
                 });
             }
             return list;
