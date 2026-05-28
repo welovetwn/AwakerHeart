@@ -29,7 +29,7 @@ steps:
     run: |
       FILE=G-AwakerHeart${{ steps.date.outputs.DATE }}.mp3
 
-      URL=https://streamak0119.akamaized.net/GoodnewsMedia/$FILE
+      URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
 
       echo "Downloading $URL"
 
