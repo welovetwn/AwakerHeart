@@ -1,60 +1,52 @@
 name: Download Daily MP3
 
 on:
-schedule:
-- cron: '0 16 * * *'
-
-workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
-download:
-runs-on: ubuntu-latest
+  download:
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-steps:
+      - name: Create mp3 folder
+        run: mkdir -p mp3
 
-  - name: Checkout repo
-    uses: actions/checkout@v4
+      - name: Generate date
+        id: date
+        run: |
+          DATE=$(TZ='Asia/Taipei' date +'%Y.%m.%d')
+          echo "DATE=$DATE" >> $GITHUB_OUTPUT
 
-  - name: Create mp3 folder
-    run: mkdir -p mp3
+      - name: Download MP3
+        run: |
+          FILE=G-AwakerHeart${{ steps.date.outputs.DATE }}.mp3
+          URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
 
-  - name: Generate date
-    id: date
-    run: |
-      DATE=$(TZ='Asia/Taipei' date +'%Y.%m.%d')
-      echo "DATE=$DATE" >> $GITHUB_OUTPUT
+          echo "Downloading $URL"
 
-  - name: Download MP3
-    run: |
-      FILE=G-AwakerHeart${{ steps.date.outputs.DATE }}.mp3
+          curl -L \
+            -A "Mozilla/5.0" \
+            -o mp3/$FILE \
+            $URL
 
-      URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
+      - name: Remove old MP3 files (keep 20 days)
+        run: |
+          cd mp3
+          ls -1t *.mp3 | tail -n +16 | xargs -r rm -f
 
-      echo "Downloading $URL"
+          echo "Remaining files:"
+          ls -lh
 
-      curl -L \
-        -A "Mozilla/5.0" \
-        -o mp3/$FILE \
-        $URL
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-  - name: Remove old MP3 files (keep 20 days)
-    run: |
-
-      cd mp3
-
-      ls -1t *.mp3 | tail -n +16 | xargs -r rm -f
-
-      echo "Remaining files:"
-      ls -lh
-
-  - name: Commit and push
-    run: |
-      git config user.name "github-actions"
-      git config user.email "github-actions@github.com"
-
-      git add mp3/
-
-      git diff --cached --quiet || git commit -m "Update MP3 files"
-
-      git push
+          git add mp3/
+          git diff --cached --quiet || git commit -m "Update MP3 files"
+          git push
