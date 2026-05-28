@@ -298,7 +298,7 @@
         <!-- 下方：播放器控制面板 -->
         <div class="player-controls-section">
             <!-- 隱藏的原生 Audio 標籤 -->
-            <audio id="audio-player"></audio>
+            <audio id="audio-player" crossorigin="anonymous"></audio>
 
             <!-- 當前播放歌曲資訊 -->
             <div class="current-track-display">
@@ -338,6 +338,7 @@
 
     <script>
         // 1. 動態產生 15 天內的播放清單資料
+        // "src": `${proxyUrl}${encodeURIComponent(originalUrl)}`
         function generatePlaylistData() {
             const list = [];
             const today = new Date();
@@ -357,7 +358,7 @@
                 list.push({
                     "title": `${dateString} 清醒的心`,
                     "artist": "教會牧長",
-                    "src": `${proxyUrl}${encodeURIComponent(originalUrl)}`
+                    "src": originalUrl
                 });
             }
             return list;
