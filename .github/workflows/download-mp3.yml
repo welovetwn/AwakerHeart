@@ -9,9 +9,15 @@ jobs:
   download:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Create mp3 folder
         run: mkdir -p mp3
@@ -26,7 +32,6 @@ jobs:
         run: |
           FILE=G-AwakerHeart${{ steps.date.outputs.DATE }}.mp3
           URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
-
           echo "Downloading $URL"
 
           curl -L \
@@ -34,11 +39,10 @@ jobs:
             -o mp3/$FILE \
             $URL
 
-      - name: Remove old MP3 files (keep 20 days)
+      - name: Remove old MP3 files (keep 15 files)
         run: |
           cd mp3
           ls -1t *.mp3 | tail -n +16 | xargs -r rm -f
-
           echo "Remaining files:"
           ls -lh
 
@@ -48,5 +52,7 @@ jobs:
           git config user.email "github-actions@github.com"
 
           git add mp3/
+
           git diff --cached --quiet || git commit -m "Update MP3 files"
-          git push
+
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
