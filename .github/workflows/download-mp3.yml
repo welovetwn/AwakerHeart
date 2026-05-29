@@ -34,7 +34,8 @@ jobs:
           URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
           echo "Downloading $URL"
 
-          curl -L \
+          curl -f \
+            -L \
             -A "Mozilla/5.0" \
             -o mp3/$FILE \
             $URL
