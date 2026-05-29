@@ -1,4 +1,3 @@
-
 name: Download Daily MP3
 
 on:
@@ -11,10 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write
-      
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true   
+      contents: write   # 👈 只需要這個
 
     steps:
       - name: Checkout repo
@@ -41,18 +37,17 @@ jobs:
 
           curl -f -L \
             -A "Mozilla/5.0" \
-            -o mp3/$FILE \
+            -o "mp3/$FILE" \
             "$URL"
 
-      - name: Verify downloaded files
+      - name: Verify download
         run: |
           echo "Downloaded files:"
           ls -lh mp3/
 
-      - name: Remove old MP3 files (keep 15 files)
+      - name: Clean old files (keep latest 15)
         run: |
           cd mp3
-
           ls -1t *.mp3 2>/dev/null | tail -n +16 | xargs -r rm -f
 
           echo "Remaining files:"
@@ -65,6 +60,6 @@ jobs:
 
           git add mp3/
 
-          git diff --cached --quiet && echo "No changes to commit" || git commit -m "Update MP3 files"
+          git diff --cached --quiet && echo "No changes" || git commit -m "Update MP3 files"
 
           git push origin HEAD:${GITHUB_REF#refs/heads/}
