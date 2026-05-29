@@ -34,11 +34,17 @@ jobs:
           URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
           echo "Downloading $URL"
 
-          curl -f \
-            -L \
+          curl -f -L \
             -A "Mozilla/5.0" \
             -o mp3/$FILE \
             $URL
+
+
+      - name: List downloaded MP3
+        run: |
+          echo "Downloaded files:"
+          ls -lh mp3/
+
 
       - name: Remove old MP3 files (keep 15 files)
         run: |
