@@ -288,7 +288,7 @@
         <!-- 上方：播放清單 -->
         <div class="playlist-section">
             <div class="playlist-title">
-                <i class="fa-solid fa-music"></i> 播放清單 (最近 15 天)
+                <i class="fa-solid fa-music"></i> 播放清單 (最近 7 天)
             </div>
             <ul class="playlist" id="playlist">
                 <!-- 播放清單項目將由 JS 動態生成 -->
@@ -337,13 +337,13 @@
     </div>
 
     <script>
-        // 1. 動態產生 15 天內的播放清單資料
+        // 1. 動態產生 7 天內的播放清單資料
         // "src": `${proxyUrl}${encodeURIComponent(originalUrl)}`
         function generatePlaylistData() {
             const list = [];
             const today = new Date();
         
-            for (let i = 0; i < 15; i++) {
+            for (let i = 0; i < 7; i++) {
                 const targetDate = new Date(today);
                 targetDate.setDate(today.getDate() - i);
         
