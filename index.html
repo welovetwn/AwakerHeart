@@ -342,10 +342,14 @@
         function generatePlaylistData() {
             const list = [];
             const today = new Date();
+            // 新增：建立「明天」的日期物件
+            const tomorrow = new Date(today);
+            tomorrow.setDate(today.getDate() + 1);
         
             for (let i = 0; i < 7; i++) {
-                const targetDate = new Date(today);
-                targetDate.setDate(today.getDate() - i);
+                // 修改：使用 tomorrow 取代原本的 today
+                const targetDate = new Date(tomorrow);
+                targetDate.setDate(tomorrow.getDate() - i);
         
                 const yyyy = targetDate.getFullYear();
                 const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
