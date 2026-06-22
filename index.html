@@ -338,27 +338,33 @@
 
     <script>
         // 1. 動態產生 7 天內的播放清單資料
-        // "src": `${proxyUrl}${encodeURIComponent(originalUrl)}`
         function generatePlaylistData() {
             const list = [];
-            const today = new Date();
-            // 新增：建立「明天」的日期物件
-            const tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
         
+            // 取得「台北時區」的當下日期與時間（避免使用者瀏覽器所在時區造成誤判）
+            const tpParts = getTaipeiDateParts();
+        
+            // 用台北時間建立「今天」的基準日期（用 UTC 建構，避免本地時區再次偏移）
+            const baseDate = new Date(Date.UTC(tpParts.year, tpParts.month - 1, tpParts.day));
+        
+            // 判斷是否已過台北時間 20:00
+            const isAfter8pm = tpParts.hour >= 20;
+        
+            // 20:00 後：起點是「明天」；20:00 前：起點是「今天」
+            const startOffset = isAfter8pm ? 1 : 0;
+        
+            // 從起點開始往回算 7 天
             for (let i = 0; i < 7; i++) {
-                // 修改：使用 tomorrow 取代原本的 today
-                const targetDate = new Date(tomorrow);
-                targetDate.setDate(tomorrow.getDate() - i);
+                const targetDate = new Date(baseDate);
+                targetDate.setUTCDate(baseDate.getUTCDate() + startOffset - i);
         
-                const yyyy = targetDate.getFullYear();
-                const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
-                const dd = String(targetDate.getDate()).padStart(2, '0');
+                const yyyy = targetDate.getUTCFullYear();
+                const mm = String(targetDate.getUTCMonth() + 1).padStart(2, '0');
+                const dd = String(targetDate.getUTCDate()).padStart(2, '0');
                 const dateString = `${yyyy}.${mm}.${dd}`;
         
-                //const originalUrl = `http://streamak0119.akamaized.net/GoodnewsMedia/G-AwakerHeart${dateString}.mp3`;
                 // ✅ GitHub Pages 本地 mp3
-                const url = `./mp3/G-AwakerHeart${dateString}.mp3`;                
+                const url = `./mp3/G-AwakerHeart${dateString}.mp3`;
                 list.push({
                     "title": `${dateString} 清醒的心`,
                     "artist": "教會牧長",
@@ -366,6 +372,35 @@
                 });
             }
             return list;
+        }
+        
+        // 取得「台北時區」的年、月、日、時（不受使用者瀏覽器時區影響）
+        function getTaipeiDateParts() {
+            const now = new Date();
+            const fmt = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Asia/Taipei',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                hour12: false
+            });
+        
+            const parts = {};
+            for (const p of fmt.formatToParts(now)) {
+                if (p.type !== 'literal') parts[p.type] = p.value;
+            }
+        
+            // 注意：hour 在 hour12:false 下，午夜可能回傳 "24"，需正規化為 0
+            let hour = parseInt(parts.hour, 10);
+            if (hour === 24) hour = 0;
+        
+            return {
+                year: parseInt(parts.year, 10),
+                month: parseInt(parts.month, 10),
+                day: parseInt(parts.day, 10),
+                hour: hour
+            };
         }
 
         // 產生播放清單
