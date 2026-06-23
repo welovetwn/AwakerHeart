@@ -2,7 +2,8 @@ name: Download Daily MP3
 
 on:
   schedule:
-    - cron: '30 11 * * *'
+    - cron: '30 19 * * *'
+      timezone: 'Asia/Taipei'
   workflow_dispatch:
 
 jobs:
