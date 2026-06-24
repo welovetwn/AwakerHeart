@@ -2,8 +2,7 @@ name: Download Daily MP3
 
 on:
   schedule:
-    - cron: '30 19 * * *'
-      timezone: 'Asia/Taipei'
+    - cron: '30 11 * * *'
   workflow_dispatch:
 
 jobs:
@@ -23,16 +22,11 @@ jobs:
       - name: Create mp3 folder
         run: mkdir -p mp3
 
-      - name: Generate date
+      - name: Generate date (明天)
         id: date
         run: |
-          DATE=$(TZ='Asia/Taipei' date +'%Y.%m.%d')
+          DATE=$(TZ='Asia/Taipei' date -d 'tomorrow' +'%Y.%m.%d')
           echo "DATE=$DATE" >> $GITHUB_OUTPUT
-
-      - name: Download MP3
-        run: |
-          FILE=G-AwakerHeart${{ steps.date.outputs.DATE }}.mp3
-          URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
 
           echo "Downloading $URL"
 
