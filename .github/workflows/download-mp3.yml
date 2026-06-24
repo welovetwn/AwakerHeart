@@ -1,7 +1,7 @@
 name: Download Daily MP3
 on:
   schedule:
-    - cron: '30 11 * * *'   # UTC 11:30 = 台北時間 19:30
+    - cron: '50 12 * * *'   # UTC 12:50 = 台北時間 20:50
   workflow_dispatch:
 
 jobs:
@@ -19,15 +19,17 @@ jobs:
       - name: Create mp3 folder
         run: mkdir -p mp3
 
-      - name: Generate date and download
+      - name: Generate date (明天)
+        id: date
         run: |
           DATE=$(TZ='Asia/Taipei' date -d 'tomorrow' +'%Y.%m.%d')
-          FILE="G-AwakerHeart${DATE}.mp3"
-          URL="http://streamak0119.akamaized.net/GoodnewsMedia/${FILE}"
+          echo "DATE=$DATE" >> $GITHUB_OUTPUT
 
-          echo "DATE=$DATE" >> $GITHUB_ENV
+      - name: Download MP3
+        run: |
+          FILE=G-AwakerHeart${{ steps.date.outputs.DATE }}.mp3
+          URL=http://streamak0119.akamaized.net/GoodnewsMedia/$FILE
           echo "FILE=$FILE" >> $GITHUB_ENV
-
           echo "Downloading $URL"
           curl -f -L \
             -A "Mozilla/5.0" \
@@ -48,10 +50,10 @@ jobs:
           echo "Downloaded files:"
           ls -lh mp3/
 
-      - name: Clean old files (keep latest 7+1 名義上7天,多保留一天--因為前一天19:30準備好隔天mp3,20:00能收聽隔天mp3)
+      - name: Clean old files (keep latest 7)
         run: |
           cd mp3
-          ls -1t *.mp3 2>/dev/null | tail -n +9 | xargs -r rm -f
+          ls -1t *.mp3 2>/dev/null | tail -n +8 | xargs -r rm -f
           echo "Remaining files:"
           ls -lh
 
