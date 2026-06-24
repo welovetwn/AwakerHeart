@@ -1,17 +1,14 @@
 name: Download Daily MP3
-
 on:
   schedule:
-    - cron: '30 11 * * *'
+    - cron: '30 11 * * *'   # UTC 11:30 = 台北時間 19:30
   workflow_dispatch:
 
 jobs:
   download:
     runs-on: ubuntu-latest
-
     permissions:
-      contents: write   # 👈 只需要這個
-
+      contents: write
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -22,21 +19,32 @@ jobs:
       - name: Create mp3 folder
         run: mkdir -p mp3
 
-      - name: Generate date (明天)
-        id: date
+      - name: Generate date and download
         run: |
           DATE=$(TZ='Asia/Taipei' date -d 'tomorrow' +'%Y.%m.%d')
-          echo "DATE=$DATE" >> $GITHUB_OUTPUT
+          FILE="G-AwakerHeart${DATE}.mp3"
+          URL="http://streamak0119.akamaized.net/GoodnewsMedia/${FILE}"
+
+          echo "DATE=$DATE" >> $GITHUB_ENV
+          echo "FILE=$FILE" >> $GITHUB_ENV
 
           echo "Downloading $URL"
-
           curl -f -L \
             -A "Mozilla/5.0" \
+            --retry 3 \
+            --retry-delay 60 \
+            --retry-connrefused \
             -o "mp3/$FILE" \
             "$URL"
 
       - name: Verify download
         run: |
+          FILE_PATH="mp3/${FILE}"
+          if [ ! -s "$FILE_PATH" ]; then
+            echo "❌ 檔案不存在或是空檔案: $FILE_PATH"
+            exit 1
+          fi
+          echo "✅ 下載成功: $FILE_PATH"
           echo "Downloaded files:"
           ls -lh mp3/
 
@@ -44,7 +52,6 @@ jobs:
         run: |
           cd mp3
           ls -1t *.mp3 2>/dev/null | tail -n +9 | xargs -r rm -f
-
           echo "Remaining files:"
           ls -lh
 
@@ -52,9 +59,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-
           git add mp3/
-
-          git diff --cached --quiet && echo "No changes" || git commit -m "Update MP3 files"
-
+          git diff --cached --quiet && echo "No changes" || git commit -m "Update MP3 files: ${FILE}"
           git push origin HEAD:${GITHUB_REF#refs/heads/}
