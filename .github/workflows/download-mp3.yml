@@ -1,7 +1,7 @@
 name: Download Daily MP3
 on:
   schedule:
-    - cron: '50 12 * * *'   # UTC 12:50 = 台北時間 20:50
+    - cron: '50 12 * * *'   # UTC 12:50 = 台灣 20:50
   workflow_dispatch:
 
 jobs:
@@ -19,10 +19,23 @@ jobs:
       - name: Create mp3 folder
         run: mkdir -p mp3
 
-      - name: Generate date (明天)
+      - name: Generate date with cross-day check
         id: date
         run: |
-          DATE=$(TZ='Asia/Taipei' date -d 'tomorrow' +'%Y.%m.%d')
+          CURRENT_HOUR=$(TZ='Asia/Taipei' date +'%H')
+          echo "Current Taiwan hour: $CURRENT_HOUR"
+          
+          if [ "$CURRENT_HOUR" -lt 6 ]; then
+            # 若在凌晨執行（0:00 ~ 5:59），使用「今天」的日期
+            # 因為排程延遲可能讓 workflow 跨日執行
+            DATE=$(TZ='Asia/Taipei' date +'%Y.%m.%d')
+            echo "⚠️ 凌晨執行，使用今天日期: $DATE"
+          else
+            # 其他時間（6:00 ~ 23:59），使用「明天」的日期
+            DATE=$(TZ='Asia/Taipei' date -d 'tomorrow' +'%Y.%m.%d')
+            echo "✅ 正常時段執行，使用明天日期: $DATE"
+          fi
+          
           echo "DATE=$DATE" >> $GITHUB_OUTPUT
 
       - name: Download MP3
